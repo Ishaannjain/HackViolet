@@ -27,7 +27,8 @@ const chartConfig = {
 export default function Example() {
   return (
     <div className="relative min-h-screen bg-black flex flex-col items-center pt-10">
-      <div className="bg-gray-800 rounded-2xl p-10 shadow-lg w-[550px] h-[550px] flex justify-center items-center absolute top-[100px] left-[40px]">
+      {/* Extended Rectangle */}
+      <div className="bg-gray-800 rounded-2xl p-10 shadow-lg w-[750px] h-[550px] flex justify-start items-center absolute top-[100px] left-[40px]">
         <Chart {...chartConfig} />
       </div>
     </div>
