@@ -23,21 +23,32 @@ contract BankFraudDetection {
 
     mapping(bytes32 => Transaction) public transactions;
     mapping(address => User) public users;
+    mapping(bytes32 => bool) public identityHashes; // Prevents duplicate identities
     mapping(bytes32 => LoanApplication) public loanApplications;
 
     event TransactionStored(bytes32 indexed txHash, address sender, address receiver, uint256 amount);
     event LoanApplicationSubmitted(bytes32 indexed appHash, bytes32 identityHash, uint256 loanAmount, bool isApproved);
     event IdentityVerified(address indexed user, bytes32 identityHash);
+    event IdentityFraudAttempt(address indexed user, bytes32 attemptedIdentityHash);
 
-    // ✅ Register & Verify User Identity
+    // ✅ Register & Verify User Identity (KYC)
     function verifyUserIdentity(bytes32 _identityHash) public {
+        require(!identityHashes[_identityHash], " Identity already exists! Possible fraud detected.");
+
         users[msg.sender] = User(_identityHash, true);
+        identityHashes[_identityHash] = true; // Store identity hash to prevent duplicates
+
         emit IdentityVerified(msg.sender, _identityHash);
+    }
+
+    // ✅ Check if an identity is already verified
+    function isIdentityVerified(bytes32 _identityHash) public view returns (bool) {
+        return identityHashes[_identityHash];
     }
 
     // ✅ Store & Verify Bank Transactions
     function storeTransaction(address _receiver, uint256 _amount) public {
-        require(users[msg.sender].isVerified, "User is not verified!");
+        require(users[msg.sender].isVerified, " User is not verified!");
 
         bytes32 txHash = keccak256(abi.encodePacked(msg.sender, _receiver, _amount, block.timestamp));
         transactions[txHash] = Transaction(msg.sender, _receiver, _amount, block.timestamp, false);
@@ -52,7 +63,7 @@ contract BankFraudDetection {
 
     // ✅ Submit Loan Application
     function submitLoanApplication(uint256 _loanAmount) public {
-        require(users[msg.sender].isVerified, "User is not verified!");
+        require(users[msg.sender].isVerified, " User is not verified!");
 
         bytes32 appHash = keccak256(abi.encodePacked(msg.sender, _loanAmount, block.timestamp));
         bytes32 identityHash = users[msg.sender].identityHash;
