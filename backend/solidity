@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract FinancialFraudDetection {
+    mapping(bytes32 => bool) public transactionHashes;
+
+    event TransactionStored(bytes32 indexed hash);
+
+    function storeTransaction(bytes32 _txHash) public {
+        require(!transactionHashes[_txHash], "Duplicate transaction detected!");
+        transactionHashes[_txHash] = true;
+        emit TransactionStored(_txHash);
+    }
+
+    function isTransactionFraudulent(bytes32 _txHash) public view returns (bool) {
+        return transactionHashes[_txHash];
+    }
+}
