@@ -1,27 +1,18 @@
 const hre = require("hardhat");
 
 async function main() {
-    console.log("🚀 Deploying smart contracts...");
+    console.log("🚀 Deploying BankAndCryptoFraudDetection contract...");
 
-    // Deploy BankFraudDetection contract
-    const BankFraudDetection = await hre.ethers.getContractFactory("BankFraudDetection");
-    const bankFraudDetection = await BankFraudDetection.deploy();
-    await bankFraudDetection.waitForDeployment();
-    const bankFraudAddress = await bankFraudDetection.getAddress();
-    console.log(`✅ BankFraudDetection deployed at: ${bankFraudAddress}\n`);
+    const BankAndCryptoFraudDetection = await hre.ethers.getContractFactory("BankAndCryptoFraudDetection");
+    const fraudDetection = await BankAndCryptoFraudDetection.deploy();
+    await fraudDetection.waitForDeployment();
 
-    // Deploy CryptoFraudDetection contract
-    const CryptoFraudDetection = await hre.ethers.getContractFactory("FraudDetection");
-    const cryptoFraudDetection = await CryptoFraudDetection.deploy();
-    await cryptoFraudDetection.waitForDeployment();
-    const cryptoFraudAddress = await cryptoFraudDetection.getAddress();
-    console.log(`✅ CryptoFraudDetection deployed at: ${cryptoFraudAddress}\n`);
-
-    console.log("🎯 Both contracts deployed successfully!");
+    const contractAddress = await fraudDetection.getAddress();
+    console.log(`✅ BankAndCryptoFraudDetection deployed at: ${contractAddress}`);
 }
 
-// Run the deployment script
+// Run deployment script
 main().catch((error) => {
-    console.error("❌ Error deploying contracts:", error);
+    console.error("❌ Error deploying contract:", error);
     process.exit(1);
 });

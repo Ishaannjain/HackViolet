@@ -1,19 +1,44 @@
 const hre = require("hardhat");
 const { ethers } = hre;
 
+// Helper function to mimic Solidity's abi.encodePacked for "address" and "uint256"
+function solidityPack(types, values) {
+    let packed = "0x";
+    for (let i = 0; i < types.length; i++) {
+      if (types[i] === "address") {
+        packed += values[i].toLowerCase().replace(/^0x/, "");
+      } else if (types[i] === "uint256") {
+        let value = values[i];
+        let hex;
+        if (typeof value === "bigint") {
+          hex = value.toString(16);
+        } else if (typeof value === "object" && typeof value.toHexString === "function") {
+          hex = value.toHexString().replace(/^0x/, "");
+        } else {
+          hex = BigInt(value).toString(16);
+        }
+        hex = hex.padStart(64, "0");
+        packed += hex;
+      } else {
+        throw new Error(`Unsupported type: ${types[i]}`);
+      }
+    }
+    return packed;
+  }
+
 async function main() {
     // Replace with deployed contract address
-    const contractAddress = "YOUR_CONTRACT_ADDRESS";
+    const contractAddress = "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318";
 
     // Get signers (bank admin + users + fraudster)
     const [bankAdmin, user1, user2, fraudster] = await ethers.getSigners();
 
-    // Attach contract with signer
-    const bankFraudDetection = (await ethers.getContractFactory("BankFraudDetection"))
+    // Attach contract with signer – note the correct contract name
+    const bankFraudDetection = (await ethers.getContractFactory("BankAndCryptoFraudDetection"))
         .attach(contractAddress)
         .connect(bankAdmin);
 
-    console.log(`✅ Interacting with BankFraudDetection at: ${contractAddress}`);
+    console.log(`✅ Interacting with BankAndCryptoFraudDetection at: ${contractAddress}`);
 
     // 🔹 Step 1: Verify Legitimate Users (KYC)
     console.log(`🟢 Verifying User 1...`);
@@ -36,7 +61,7 @@ async function main() {
     }
 
     // 🔹 Step 3: Checking Identity Verification Status
-    console.log(`🔍 Checking identity verification...\n`);
+    console.log(`🔍 Checking identity verification...`);
     console.log(`🔹 Is User 1 verified? ${await bankFraudDetection.isIdentityVerified(identityHashUser1)}`);
     console.log(`🔹 Is User 2 verified? ${await bankFraudDetection.isIdentityVerified(identityHashUser2)}`);
     console.log(`🔹 Is Fraudster verified? ${await bankFraudDetection.isIdentityVerified(
@@ -94,16 +119,23 @@ async function main() {
         console.log("✅ Fraud detected! Unverified user was blocked from applying for a loan!\n");
     }
 
-    // 🔹 Step 10: Approving/Rejecting Loans
+    // 🔹 Step 10: Approving/Rejecting Loans  
+    // (We now compute the application hash exactly as the contract does.)
     console.log(`🔹 Bank Admin approving User 1's loan...`);
-    const appHash1 = ethers.keccak256(ethers.toUtf8Bytes("User1's Loan"));
-    await bankFraudDetection.approveLoan(appHash1, true);
-    console.log("✅ User 1's loan approved!\n");
+  const appHash1 = ethers.keccak256(
+    solidityPack(["address", "uint256"], [user1.address, ethers.parseEther("5000")])
+  );
+  await bankFraudDetection.approveLoan(appHash1, true);
+  console.log("✅ User 1's loan approved!\n");
 
-    console.log(`🔹 Bank Admin rejecting User 2's loan...`);
-    const appHash2 = ethers.keccak256(ethers.toUtf8Bytes("User2's Loan"));
-    await bankFraudDetection.approveLoan(appHash2, false);
-    console.log("✅ User 2's loan rejected!\n");
+  console.log(`🔹 Bank Admin rejecting User 2's loan...`);
+  const appHash2 = ethers.keccak256(
+    solidityPack(["address", "uint256"], [user2.address, ethers.parseEther("10000")])
+  );
+  await bankFraudDetection.approveLoan(appHash2, false);
+  console.log("✅ User 2's loan rejected!\n");
+
+    
 
     console.log("🎯 All test cases completed successfully!");
 }
