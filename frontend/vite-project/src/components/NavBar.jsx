@@ -27,19 +27,6 @@ const NavBar = () => {
       <div onClick={handleNav} className='block md:hidden'>
         {!nav ? <AiOutlineClose size={30}/> : <AiOutlineMenu size={30}/>}
       </div>
-      <div className={nav ? 'fixed left-0 top-0 w-[70%] h-full border-r border-r-gray-900 bg-[#000300] ease-in-out duration-500' : 'fixed left-[-100%]'}>
-        <h1 className='w-full text-4xl font-bold text-[#00df9a] m-6'>
-          CHUT.
-        </h1>
-        <ul className='uppercase p-6 text-lg'>
-          <li className='p-6 border-b border-gray-600'>
-            <Link to="/" onClick={handleNav}>Home</Link>
-          </li>
-          <li className='p-6 border-b border-gray-600'>
-            <Link to="/services" onClick={handleNav}>Services</Link>
-          </li>
-        </ul>
-      </div>
     </div>
   );
 };

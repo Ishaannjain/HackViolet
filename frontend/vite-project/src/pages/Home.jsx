@@ -3,24 +3,35 @@ import { useNavigate } from "react-router-dom";
 import Chart from "react-apexcharts";
 import Chatbot from "./ChatBot";
 
+const categories = [
+  { name: "Bills and Utilities", amount: 320 },
+  { name: "Travel", amount: 150 },
+  { name: "Miscellaneous", amount: 100 },
+  { name: "Subscriptions", amount: 80 },
+  { name: "Hotel/Dining", amount: 200 },
+];
 
 const chartConfig = {
-  type: "pie",
-  width: 500,
-  height: 500,
-  series: [44, 55, 13, 43, 22], 
+  series: categories.map((cat) => cat.amount),
   options: {
-    chart: { toolbar: { show: false } },
-    title: { show: "" },
-    dataLabels: { enabled: false },
+    chart: { type: "pie", toolbar: { show: false } },
+    labels: categories.map((cat) => cat.name),
+    tooltip: {
+      y: {
+        formatter: function (val, { seriesIndex }) {
+          return `$${val} spent on ${categories[seriesIndex].name}`;
+        },
+      },
+    },
     colors: ["#ffffff", "#ff8f00", "#00897b", "#1e88e5", "#d81b60"],
-    stroke: { show: false },
-    legend: { show: false }
-  }
+    dataLabels: { enabled: false },
+    legend: { show: false },
+  },
 };
 
 const totalCredit = 1000;
-const availableCredit = 750;
+const totalSpent = categories.reduce((sum, cat) => sum + cat.amount, 0);
+const availableCredit = totalCredit - totalSpent;
 const usedPercentage = ((totalCredit - availableCredit) / totalCredit) * 100;
 
 export default function Home() {
@@ -103,7 +114,7 @@ export default function Home() {
       ) : (
         <div className="flex flex-wrap justify-center items-center w-full px-10">
           <div className="bg-gray-800 rounded-2xl p-10 shadow-lg flex justify-center items-center">
-            <Chart {...chartConfig} />
+            <Chart options={chartConfig.options} series={chartConfig.series} type="pie" width={500} height={500} />
           </div>
 
           <div className="flex flex-col space-y-4 ml-0 sm:ml-4">
