@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
 const Payment = () => {
-  const [category, setCategory] = useState("");
-
   return (
     <div className="flex justify-center items-center h-screen bg-black">
       <div className="w-96 p-6 shadow-lg bg-white rounded-md">
@@ -48,24 +46,6 @@ const Payment = () => {
           />
         </div>
 
-        <div className="mt-3">
-          <label htmlFor="category" className="block text-base mb-2">Payment Category</label>
-          <select
-            id="category"
-            className="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option value="">Select a category...</option>
-            <option value="Dining">Dining</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="Bills and Utilities">Bills and Utilities</option>
-            <option value="Subscriptions">Subscriptions</option>
-            <option value="Miscellaneous">Miscellaneous</option>
-            <option value="Travel">Travel</option>
-          </select>
-        </div>
-
         <div className="mt-5">
           <button className="bg-green-600 w-full py-2 text-white rounded-md">Confirm Payment</button>
         </div>
@@ -74,4 +54,4 @@ const Payment = () => {
   );
 };
 
-export default Payment;
+export default Payment;
