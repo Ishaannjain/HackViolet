@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; 
 import Chart from "react-apexcharts";
 import Chatbot from "./ChatBot";
@@ -46,6 +46,15 @@ export default function Home() {
     { amount: "$125.50", time: "2025-01-30 19:45" },
   ]);
 
+  useEffect(() => {
+    const fraudFlag = localStorage.getItem("fraudDetected");
+    if (fraudFlag === "true") {
+      setFraudDetected(true);
+      localStorage.removeItem("fraudDetected");
+      localStorage.removeItem("transactionCount");
+    }
+  }, []);
+
   const handleVerify = () => {
     if (code === "1234") {
       setVerificationStatus("success");
@@ -61,8 +70,8 @@ export default function Home() {
 
   const handleReport = () => {
     const newFraud = {
-      amount: `$${(Math.random() * 500 + 50).toFixed(2)}`, 
-      time: new Date().toISOString().slice(0, 16).replace("T", " ") 
+      amount: `$${(Math.random() * 500 + 50).toFixed(2)}`,
+      time: new Date().toISOString().slice(0, 16).replace("T", " ")
     };
 
     setFraudHistory((prevHistory) => [newFraud, ...prevHistory]);
@@ -138,7 +147,9 @@ export default function Home() {
               </ul>
             </div>
 
-            <button onClick={() => navigate("/payment")} className="bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg w-full">
+            <button 
+              onClick={() => navigate("/payment")} 
+              className="bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg w-full">
               Make Payment 💳
             </button>
           </div>
