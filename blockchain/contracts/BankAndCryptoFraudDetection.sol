@@ -17,18 +17,18 @@ contract BankAndCryptoFraudDetection {
     }
 
     struct LoanApplication {
-        bytes32 identityHash; // Link loan request to verified user
+        bytes32 identityHash; // Link loan request to verified user (not used now)
         uint256 loanAmount;
         bool isApproved;
     }
 
     // --------------------  MAPPINGS (DATA STORAGE)  --------------------
     mapping(bytes32 => Transaction) public transactions; // Track transactions
-    mapping(address => User) public users; // KYC-verified users
-    mapping(bytes32 => bool) public identityHashes; // Prevent duplicate identities
+    mapping(address => User) public users;                 // KYC-verified users (no longer used)
+    mapping(bytes32 => bool) public identityHashes;        // Prevent duplicate identities (not used)
     mapping(bytes32 => LoanApplication) public loanApplications; // Track loans
-    mapping(bytes32 => bool) public transactionHashes; // Store transaction hashes
-    mapping(bytes32 => bool) public duplicateAttempt; // Track duplicate transactions
+    mapping(bytes32 => bool) public transactionHashes;     // Store transaction hashes
+    mapping(bytes32 => bool) public duplicateAttempt;      // Track duplicate transactions
     mapping(address => bool) public hasActiveLoanApplication; // Prevent duplicate loan applications
 
     // -----------------------  EVENTS  -----------------------
@@ -39,30 +39,12 @@ contract BankAndCryptoFraudDetection {
     event LoanApplicationSubmitted(bytes32 indexed appHash, bytes32 identityHash, uint256 loanAmount, bool isApproved);
     event LoanApproved(bytes32 indexed appHash, bool isApproved);
 
-    // -----------------------  KYC (Identity Verification)  -----------------------
-
-    // Register & Verify User Identity
-    function verifyUserIdentity(bytes32 _identityHash) public {
-        require(!identityHashes[_identityHash], "Identity already exists! Possible fraud detected.");
-        
-        users[msg.sender] = User(_identityHash, true);
-        identityHashes[_identityHash] = true; // Store identity hash to prevent duplicates
-
-        emit IdentityVerified(msg.sender, _identityHash);
-    }
-
-    // Check if an identity is already verified
-    function isIdentityVerified(bytes32 _identityHash) public view returns (bool) {
-        return identityHashes[_identityHash];
-    }
-
     // -----------------------  BANK/CRYPTO TRANSACTIONS  -----------------------
 
     // Store Transaction with Duplicate Detection  
-    // (We compute the hash from sender, receiver, and amount only so that a duplicate call is caught)
+    // (Compute the hash from sender, receiver, and amount so that duplicate calls are caught)
     function storeTransaction(address _receiver, uint256 _amount) public {
-        require(users[msg.sender].isVerified, "User is not verified!");
-        // Compute a hash without block.timestamp so that the same parameters yield the same hash
+        // Removed user verification requirement.
         bytes32 txHash = keccak256(abi.encodePacked(msg.sender, _receiver, _amount));
         require(!transactionHashes[txHash], "Duplicate transaction detected!");
         
@@ -72,7 +54,7 @@ contract BankAndCryptoFraudDetection {
         emit TransactionStored(txHash, msg.sender, _receiver, _amount);
     }
 
-    // (This view function is not used in our tests but is provided for completeness.)
+    // (This view function is provided for completeness.)
     function checkTransaction(bytes32 _txHash) public view returns (bool) {
         return transactions[_txHash].isFraudulent;
     }
@@ -99,14 +81,14 @@ contract BankAndCryptoFraudDetection {
     // -----------------------  LOAN SYSTEM (Bank Loans & Credit Fraud Prevention)  -----------------------
 
     // Submit Loan Application  
-    // (We compute the application hash deterministically using sender and loan amount and record that a user has an active application.)
+    // (Compute the application hash deterministically using sender and loan amount and record that a user has an active application)
     function submitLoanApplication(uint256 _loanAmount) public {
-        require(users[msg.sender].isVerified, "User is not verified!");
+        // Removed user verification requirement.
         require(!hasActiveLoanApplication[msg.sender], "Duplicate loan application detected!");
 
-        // Use a hash that does not include block.timestamp so that duplicate submissions (with the same amount) are caught
         bytes32 appHash = keccak256(abi.encodePacked(msg.sender, _loanAmount));
-        bytes32 identityHash = users[msg.sender].identityHash;
+        // Since user verification is removed, we use a default identity hash (zero value)
+        bytes32 identityHash = bytes32(0);
 
         loanApplications[appHash] = LoanApplication(identityHash, _loanAmount, false);
         hasActiveLoanApplication[msg.sender] = true;
