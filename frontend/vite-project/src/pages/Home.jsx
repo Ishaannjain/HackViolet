@@ -19,7 +19,6 @@ const chartConfig = {
   }
 };
 
-// Credit details
 const totalCredit = 1000;
 const availableCredit = 750;
 const usedPercentage = ((totalCredit - availableCredit) / totalCredit) * 100;
@@ -31,7 +30,6 @@ export default function Home() {
   const [verificationStatus, setVerificationStatus] = useState(null);
   const navigate = useNavigate();
 
-  // Dummy fraud history data
   const [fraudHistory, setFraudHistory] = useState([
     { amount: "$250.00", time: "2025-02-01 14:30" },
     { amount: "$125.50", time: "2025-01-30 19:45" },
@@ -52,8 +50,8 @@ export default function Home() {
 
   const handleReport = () => {
     const newFraud = {
-      amount: `$${(Math.random() * 500 + 50).toFixed(2)}`, // Random amount between $50 - $550
-      time: new Date().toISOString().slice(0, 16).replace("T", " ") // Format time
+      amount: `$${(Math.random() * 500 + 50).toFixed(2)}`, 
+      time: new Date().toISOString().slice(0, 16).replace("T", " ") 
     };
 
     setFraudHistory((prevHistory) => [newFraud, ...prevHistory]);
@@ -109,7 +107,6 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col space-y-4 ml-0 sm:ml-4">
-            {/* Credit Section */}
             <div className="bg-gray-800 rounded-2xl p-6 shadow-lg w-[300px] h-[140px] flex flex-col justify-center items-center">
               <span className="text-white text-xl font-bold">Available Balance: ${availableCredit}</span>
               <div className="w-full bg-gray-600 rounded-full h-2.5 mt-3 overflow-hidden">
@@ -118,7 +115,6 @@ export default function Home() {
               <span className="text-gray-400 text-sm mt-2">Total Credit: ${totalCredit}</span>
             </div>
 
-            {/* Fraud History Section */}
             <div className="bg-gray-800 rounded-2xl p-6 shadow-lg w-[300px] h-[350px] text-white overflow-y-auto">
               <h2 className="text-lg font-semibold mb-4">Fraud History</h2>
               <ul className="space-y-3">
@@ -131,7 +127,6 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Make Payment (Full Width) */}
             <button onClick={() => navigate("/payment")} className="bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg w-full">
               Make Payment 💳
             </button>
@@ -139,17 +134,14 @@ export default function Home() {
         </div>
       )}
 
-      {/* Chatbot Toggle Button (Bottom Right) */}
       <button 
         onClick={() => setChatbotVisible(!chatbotVisible)}
         className="fixed bottom-5 right-5 bg-blue-600 text-white p-3 rounded-full shadow-lg">
         {chatbotVisible ? "⬇️" : "⬆️"}
       </button>
 
-      {/* Chatbot Component */}
       {chatbotVisible && <Chatbot closeChatbot={() => setChatbotVisible(false)} />}
 
-      {/* Small Red Simulate Fraud Button (Bottom Left) */}
       <button
         onClick={() => setFraudDetected(true)}
         className="fixed bottom-5 left-5 bg-red-600 text-white p-3 rounded-full shadow-lg">

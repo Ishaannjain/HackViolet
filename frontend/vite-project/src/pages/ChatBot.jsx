@@ -24,7 +24,6 @@ const Chatbot = ({ closeChatbot }) => {
 
   return (
     <div className="fixed bottom-5 right-5 w-[350px] h-[500px] bg-white rounded-2xl shadow-lg flex flex-col z-50">
-      {/* Chat Header */}
       <div className="bg-gray-800 text-white py-3 px-5 font-semibold text-lg flex justify-between items-center rounded-t-2xl">
         Chatbot 💬
         <button 
@@ -34,7 +33,6 @@ const Chatbot = ({ closeChatbot }) => {
         </button>
       </div>
 
-      {/* Messages Container */}
       <div className="flex-1 p-4 overflow-y-auto space-y-2">
         {messages.map((msg, index) => (
           <div key={index} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
@@ -47,8 +45,7 @@ const Chatbot = ({ closeChatbot }) => {
           </div>
         ))}
       </div>
-
-      {/* Input Area */}
+      
       <div className="p-3 border-t flex items-center">
         <input
           type="text"
