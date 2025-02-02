@@ -1,0 +1,13 @@
+[
+    { "cost": 120, "category": "Dining" },
+    { "cost": 85, "category": "Entertainment" },
+    { "cost": 200, "category": "Bills and Utilities" },
+    { "cost": 50, "category": "Subscriptions" },
+    { "cost": 30, "category": "Miscellaneous" },
+    { "cost": 300, "category": "Travel" },
+    { "cost": 150, "category": "Dining" },
+    { "cost": 70, "category": "Entertainment" },
+    { "cost": 180, "category": "Bills and Utilities" },
+    { "cost": 90, "category": "Subscriptions" }
+  ]
+  
