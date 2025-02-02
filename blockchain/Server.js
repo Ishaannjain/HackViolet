@@ -81,7 +81,7 @@ async function checkIfTransactionExists(sender, receiver, amount) {
     return exists;
   } catch (err) {
     // If the call fails (mismatch ABI?), assume false to not block
-    console.log("🚨 [No Duplicates]");
+    console.log("🚨 [No Duplicate]");
     return false;
   }
 }
