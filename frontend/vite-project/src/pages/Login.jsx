@@ -9,7 +9,7 @@ const Login = () => {
         <h1 className="text-3xl block text-center font-semibold">Login</h1>
         <div className="mt-3">
           <label htmlFor="username" className="block text-base mb-2">
-            Username/Phone Number
+            Phone Number
           </label>
           <input
             type="text"
