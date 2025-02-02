@@ -6,7 +6,6 @@ import json
 import sys
 import select
 
-# List of predefined web requests (random transactions)
 transactions = [
     {
         "sender": "0xbDA5747bFD65F08deb54cb465eB87D40e51B197E",
@@ -29,13 +28,11 @@ def flush_stdin():
         while msvcrt.kbhit():
             msvcrt.getch()
     except ImportError:
-        # On Unix-like systems, use select
         while sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
             sys.stdin.readline()
 
 def start_servers():
     print("🚀 Starting Hardhat node...", flush=True)
-    # Start the Hardhat node
     hardhat_proc = subprocess.Popen("npx hardhat node", shell=True)
     time.sleep(5)  # Give Hardhat node time to initialize
 
@@ -60,7 +57,6 @@ def start_servers():
         print("❌ Deploy script failed!", flush=True)
         return
 
-    # Wait until contract-address.json is generated
     contract_address = None
     for _ in range(20):
         try:
@@ -86,7 +82,6 @@ def start_servers():
 
     print("✅ All servers are running!", flush=True)
 
-# Function to send transactions
 index = 0
 def send_transaction():
     global index
@@ -106,10 +101,7 @@ def send_transaction():
         print(f"🚨 Error sending transaction: {e}", flush=True)
     index += 1
 
-# Start servers in a background thread
-#threading.Thread(target=start_servers, daemon=True).start()
 start_servers()
-# Wait a bit to ensure servers are fully running
 time.sleep(5)
 flush_stdin()
 
@@ -117,10 +109,9 @@ print("🖱️ Ready to send transactions.", flush=True)
 print("run_all.py started, waiting for 'balls'...", flush=True)
 
 while True:
-    user_input = input().strip().lower()  # Wait for input from stdin
+    user_input = input().strip().lower() 
     if user_input == "balls":
         print("Got 'balls'! Sending transactions...", flush=True)
-        # Put your transaction sending logic here, e.g. send_transaction()
         send_transaction()
     else:
         print(f"Ignored input: {user_input}", flush=True)
