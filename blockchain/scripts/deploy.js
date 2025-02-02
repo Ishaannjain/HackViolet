@@ -1,18 +1,20 @@
+const fs = require("fs");
 const hre = require("hardhat");
 
 async function main() {
-    console.log("🚀 Deploying BankAndCryptoFraudDetection contract...");
+  const BankAndCryptoFraudDetection = await hre.ethers.getContractFactory("BankAndCryptoFraudDetection");
+  const contract = await BankAndCryptoFraudDetection.deploy();
 
-    const BankAndCryptoFraudDetection = await hre.ethers.getContractFactory("BankAndCryptoFraudDetection");
-    const fraudDetection = await BankAndCryptoFraudDetection.deploy();
-    await fraudDetection.waitForDeployment();
+  // Wait for the deployment to finish using waitForDeployment()
+  await contract.waitForDeployment();
+  console.log("🚀 Contract deployed at:", contract.target);
 
-    const contractAddress = await fraudDetection.getAddress();
-    console.log(`✅ BankAndCryptoFraudDetection deployed at: ${contractAddress}`);
+  // Write contract address to file
+  fs.writeFileSync("contract-address.json", JSON.stringify({ contractAddress: contract.target }, null, 2));
+  console.log("✅ Saved contract address to contract-address.json");
 }
 
-// Run deployment script
 main().catch((error) => {
-    console.error("❌ Error deploying contract:", error);
-    process.exit(1);
+  console.error(error);
+  process.exit(1);
 });

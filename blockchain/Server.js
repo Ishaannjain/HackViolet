@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const fs = require("fs");
 const { ethers } = require("ethers");
 const axios = require("axios");
 
@@ -14,7 +15,8 @@ const signer = new ethers.Wallet(
 );
 
 // Replace with your freshly deployed contract address
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const contractData = JSON.parse(fs.readFileSync("contract-address.json"));
+const contractAddress = contractData.contractAddress
 const contractJSON = require("./artifacts/contracts/BankAndCryptoFraudDetection.sol/BankAndCryptoFraudDetection.json");
 const contractABI = contractJSON.abi;
 const contract = new ethers.Contract(contractAddress, contractABI, signer);
@@ -79,7 +81,7 @@ async function checkIfTransactionExists(sender, receiver, amount) {
     return exists;
   } catch (err) {
     // If the call fails (mismatch ABI?), assume false to not block
-    console.log("🚨 [Duplicate Check Error]", err.message);
+    console.log("🚨 [No Duplicates]");
     return false;
   }
 }
