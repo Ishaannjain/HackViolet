@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("");
@@ -7,11 +7,11 @@ const UserDetails = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [pin, setPin] = useState("");
   
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
-    // Perform any form validation or API call here
-    navigate("/"); // Redirect to homepage
+    
+    navigate("/");
   };
 
   return (
@@ -73,7 +73,7 @@ const UserDetails = () => {
             value={pin}
             maxLength="4"
             onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, ""); // Only allow numbers
+              const value = e.target.value.replace(/\D/g, ""); 
               if (value.length <= 4) setPin(value);
             }}
           />

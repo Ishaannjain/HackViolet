@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import UserDetails from "./pages/UserDetails";
-import Payment from "./pages/Payment"; // Import Payment Page
+import Payment from "./pages/Payment"; 
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/userdetails" element={<UserDetails />} />
-        <Route path="/payment" element={<Payment />} /> {/* Added Payment Page */}
+        <Route path="/payment" element={<Payment />} /> {}
       </Routes>
     </Router>
   );

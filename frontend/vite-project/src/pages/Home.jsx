@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // For navigation
+import { useNavigate } from "react-router-dom"; 
 import Chart from "react-apexcharts";
 import Chatbot from "./ChatBot";
 
-// Pie Chart Configuration
+
 const chartConfig = {
   type: "pie",
   width: 500,
   height: 500,
-  series: [44, 55, 13, 43, 22], // Pie chart data
+  series: [44, 55, 13, 43, 22], 
   options: {
     chart: { toolbar: { show: false } },
     title: { show: "" },
@@ -29,7 +29,7 @@ export default function Home() {
   const [chatbotVisible, setChatbotVisible] = useState(false);
   const [code, setCode] = useState("");
   const [verificationStatus, setVerificationStatus] = useState(null);
-  const navigate = useNavigate(); // Navigation hook
+  const navigate = useNavigate();
 
   // Dummy fraud history data
   const [fraudHistory, setFraudHistory] = useState([

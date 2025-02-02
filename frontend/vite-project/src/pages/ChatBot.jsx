@@ -13,7 +13,7 @@ const Chatbot = ({ closeChatbot }) => {
     setMessages([...messages, newMessage]);
     setInput("");
 
-    // Simulated bot response
+    
     setTimeout(() => {
       setMessages((prev) => [
         ...prev,
