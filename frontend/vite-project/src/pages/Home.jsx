@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Chart from "react-apexcharts";
-import Chatbot from "./ChatBot"; // Ensure correct path
+import Chatbot from "./ChatBot"; 
 
 const chartConfig = {
   type: "pie",
@@ -12,7 +12,7 @@ const chartConfig = {
     title: { show: "" },
     dataLabels: { enabled: false },
     colors: ["#ffffff", "#ff8f00", "#00897b", "#1e88e5", "#d81b60"],
-    stroke: { show: false }, // Removes white outline
+    stroke: { show: false }, 
     legend: { show: false },
   },
 };
@@ -27,7 +27,6 @@ export default function Home() {
   const [code, setCode] = useState("");
   const [verificationStatus, setVerificationStatus] = useState(null);
 
-  // Dummy fraud history data
   const [fraudHistory, setFraudHistory] = useState([
     { amount: "$250.00", time: "2025-02-01 14:30" },
     { amount: "$125.50", time: "2025-01-30 19:45" },
@@ -43,7 +42,7 @@ export default function Home() {
     setTimeout(() => {
       setVerificationStatus(null);
       setCode("");
-    }, 3000);
+    }, 2000);
   };
 
   const handleReport = () => {

@@ -30,9 +30,11 @@ const Login = () => {
           />
         </div>
         <div className="mt-5">
+            <Link to="/">
           <button className="bg-black w-full py-2 text-white rounded-md">
             Sign In
           </button>
+          </Link>
         </div>
         <div className="mt-3 text-center">
           <p className="text-gray-600">Don't have an account?</p>
