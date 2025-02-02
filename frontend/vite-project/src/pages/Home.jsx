@@ -27,6 +27,12 @@ export default function Home() {
   const [code, setCode] = useState("");
   const [verificationStatus, setVerificationStatus] = useState(null);
 
+  // Dummy fraud history data
+  const [fraudHistory, setFraudHistory] = useState([
+    { amount: "$250.00", time: "2025-02-01 14:30" },
+    { amount: "$125.50", time: "2025-01-30 19:45" },
+  ]);
+
   const handleVerify = () => {
     if (code === "1234") {
       setVerificationStatus("success");
@@ -41,6 +47,16 @@ export default function Home() {
   };
 
   const handleReport = () => {
+    // Simulate a fraudulent transaction with a random amount and current timestamp
+    const newFraud = {
+      amount: `$${(Math.random() * 500 + 50).toFixed(2)}`, // Random amount between $50 - $550
+      time: new Date().toISOString().slice(0, 16).replace("T", " ") // Format time
+    };
+
+    // Add new fraud record to history
+    setFraudHistory((prevHistory) => [newFraud, ...prevHistory]);
+
+    // Set failure state
     setVerificationStatus("failure");
     setFraudDetected(false);
     setTimeout(() => {
@@ -101,11 +117,20 @@ export default function Home() {
               <span className="text-gray-400 text-sm mt-2">Total Credit: ${totalCredit}</span>
             </div>
 
-            {/* Empty Notifications Box */}
+            {/* Fraud History Section */}
             <div className="bg-gray-800 rounded-2xl p-6 shadow-lg w-[300px] h-[350px] text-white overflow-y-auto">
-              <h2 className="text-lg font-semibold mb-4">Notifications</h2>
+              <h2 className="text-lg font-semibold mb-4">Fraud History</h2>
               <ul className="space-y-3">
-                {/* Empty for now - You can add notifications here later */}
+                {fraudHistory.length === 0 ? (
+                  <p className="text-gray-400">No fraudulent transactions detected.</p>
+                ) : (
+                  fraudHistory.map((entry, index) => (
+                    <li key={index} className="border-b border-gray-600 pb-2">
+                      <p className="text-white font-bold">{entry.amount}</p>
+                      <p className="text-gray-400 text-sm">{entry.time}</p>
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
             
