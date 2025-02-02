@@ -1,59 +1,25 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // For navigation
 import Chart from "react-apexcharts";
-import Chatbot from "./ChatBot"; 
-import axios from "axios";
+import Chatbot from "./ChatBot";
 
-export default function SpendingChart() {
-  const [chartData, setChartData] = useState({
-    series: [],
-    labels: []
-  });
+// Pie Chart Configuration
+const chartConfig = {
+  type: "pie",
+  width: 500,
+  height: 500,
+  series: [44, 55, 13, 43, 22], // Pie chart data
+  options: {
+    chart: { toolbar: { show: false } },
+    title: { show: "" },
+    dataLabels: { enabled: false },
+    colors: ["#ffffff", "#ff8f00", "#00897b", "#1e88e5", "#d81b60"],
+    stroke: { show: false },
+    legend: { show: false }
+  }
+};
 
-  useEffect(() => {
-    // Fetch data from the backend
-    axios.get("http://localhost:5000/api/spending-distribution")
-      .then(response => {
-        const { categoryTotals } = response.data;
-        const categories = Object.keys(categoryTotals);
-        const values = Object.values(categoryTotals);
-
-        setChartData({
-          series: values,
-          labels: categories
-        });
-      })
-      .catch(error => console.error("Error fetching chart data:", error));
-  }, []);
-
-  const chartConfig = {
-    type: "pie",
-    width: 500,
-    height: 500,
-    series: chartData.series,
-    options: {
-      labels: chartData.labels,
-      chart: { toolbar: { show: false } },
-      title: { show: false },
-      dataLabels: { enabled: false },
-      colors: ["#ffffff", "#ff8f00", "#00897b", "#1e88e5", "#d81b60"],
-      stroke: { show: false },
-      legend: { show: true },
-    },
-  };
-
-  return (
-    <div className="relative min-h-screen bg-black flex flex-col items-center pt-10">
-      <div className="bg-gray-800 rounded-2xl p-10 shadow-lg w-[750px] h-[550px] flex justify-center items-center">
-        {chartData.series.length > 0 ? (
-          <Chart {...chartConfig} />
-        ) : (
-          <p className="text-white">Loading chart data...</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
+// Credit details
 const totalCredit = 1000;
 const availableCredit = 750;
 const usedPercentage = ((totalCredit - availableCredit) / totalCredit) * 100;
@@ -63,7 +29,9 @@ export default function Home() {
   const [chatbotVisible, setChatbotVisible] = useState(false);
   const [code, setCode] = useState("");
   const [verificationStatus, setVerificationStatus] = useState(null);
+  const navigate = useNavigate(); // Navigation hook
 
+  // Dummy fraud history data
   const [fraudHistory, setFraudHistory] = useState([
     { amount: "$250.00", time: "2025-02-01 14:30" },
     { amount: "$125.50", time: "2025-01-30 19:45" },
@@ -79,20 +47,17 @@ export default function Home() {
     setTimeout(() => {
       setVerificationStatus(null);
       setCode("");
-    }, 2000);
+    }, 3000);
   };
 
   const handleReport = () => {
-    // Simulate a fraudulent transaction with a random amount and current timestamp
     const newFraud = {
       amount: `$${(Math.random() * 500 + 50).toFixed(2)}`, // Random amount between $50 - $550
       time: new Date().toISOString().slice(0, 16).replace("T", " ") // Format time
     };
 
-    // Add new fraud record to history
     setFraudHistory((prevHistory) => [newFraud, ...prevHistory]);
 
-    // Set failure state
     setVerificationStatus("failure");
     setFraudDetected(false);
     setTimeout(() => {
@@ -157,41 +122,32 @@ export default function Home() {
             <div className="bg-gray-800 rounded-2xl p-6 shadow-lg w-[300px] h-[350px] text-white overflow-y-auto">
               <h2 className="text-lg font-semibold mb-4">Fraud History</h2>
               <ul className="space-y-3">
-                {fraudHistory.length === 0 ? (
-                  <p className="text-gray-400">No fraudulent transactions detected.</p>
-                ) : (
-                  fraudHistory.map((entry, index) => (
-                    <li key={index} className="border-b border-gray-600 pb-2">
-                      <p className="text-white font-bold">{entry.amount}</p>
-                      <p className="text-gray-400 text-sm">{entry.time}</p>
-                    </li>
-                  ))
-                )}
+                {fraudHistory.map((entry, index) => (
+                  <li key={index} className="border-b border-gray-600 pb-2">
+                    <p className="text-white font-bold">{entry.amount}</p>
+                    <p className="text-gray-400 text-sm">{entry.time}</p>
+                  </li>
+                ))}
               </ul>
             </div>
-            
-            {/* Buttons for Fraud Alert and Chatbot */}
-            <div className="flex space-x-4">
-              <button 
-                onClick={() => setFraudDetected(true)}
-                className="bg-red-600 text-white py-2 px-4 rounded-lg shadow-lg w-[140px]">
-                Trigger Fraud Alert
-              </button>
 
-              <button 
-                onClick={() => setChatbotVisible(true)}
-                className="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-lg w-[140px]">
-                Chatbot 💬
-              </button>
-            </div>
+            {/* Make Payment (Full Width) */}
+            <button onClick={() => navigate("/payment")} className="bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg w-full">
+              Make Payment 💳
+            </button>
           </div>
         </div>
       )}
 
-      {/* Chatbot Component (Only visible when chatbotVisible is true) */}
-      {chatbotVisible && (
-        <Chatbot closeChatbot={() => setChatbotVisible(false)} />
-      )}
+      {/* Chatbot Toggle Button (Bottom Right) */}
+      <button 
+        onClick={() => setChatbotVisible(!chatbotVisible)}
+        className="fixed bottom-5 right-5 bg-blue-600 text-white p-3 rounded-full shadow-lg">
+        {chatbotVisible ? "⬇️" : "⬆️"}
+      </button>
+
+      {/* Chatbot Component */}
+      {chatbotVisible && <Chatbot closeChatbot={() => setChatbotVisible(false)} />}
     </div>
   );
 }
