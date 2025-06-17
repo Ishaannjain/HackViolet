@@ -5,6 +5,7 @@ const Payment = () => {
   const [transactionCount, setTransactionCount] = useState(0);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [amount, setAmount] = useState("");
+  const [status, setStatus] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,7 +15,7 @@ const Payment = () => {
     }
   }, []);
 
-  const handlePaymentConfirm = () => {
+  const handlePaymentConfirm = async () => {
     const newCount = transactionCount + 1;
     setTransactionCount(newCount);
     localStorage.setItem("transactionCount", newCount.toString());
@@ -27,6 +28,21 @@ const Payment = () => {
       setTimeout(() => {
         setShowConfirmation(false);
       }, 3000);
+    }
+
+    // Also send to backend
+    try {
+      const response = await fetch("http://localhost:4000/send_balls", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setStatus(data.message || "Payment confirmed");
+    } catch (error) {
+      console.error("Error:", error);
+      setStatus("Error confirming payment");
     }
   };
 
@@ -52,9 +68,11 @@ const Payment = () => {
                     />
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Payment Successful!
+                </h2>
                 <p className="text-gray-600 mb-4">
-                  ${amount || '0'} has been processed successfully
+                  ${amount || "0"} has been processed successfully
                 </p>
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -66,9 +84,11 @@ const Payment = () => {
         )}
 
         <h1 className="text-3xl block text-center font-semibold">Make a Payment</h1>
-        
+
         <div className="mt-3">
-          <label htmlFor="amount" className="block text-base mb-2">Payment Amount</label>
+          <label htmlFor="amount" className="block text-base mb-2">
+            Payment Amount
+          </label>
           <input
             type="number"
             id="amount"
@@ -80,7 +100,9 @@ const Payment = () => {
         </div>
 
         <div className="mt-3">
-          <label htmlFor="card" className="block text-base mb-2">Card Number</label>
+          <label htmlFor="card" className="block text-base mb-2">
+            Card Number
+          </label>
           <input
             type="text"
             id="card"
@@ -90,7 +112,9 @@ const Payment = () => {
         </div>
 
         <div className="mt-3">
-          <label htmlFor="expiry" className="block text-base mb-2">Expiry Date</label>
+          <label htmlFor="expiry" className="block text-base mb-2">
+            Expiry Date
+          </label>
           <input
             type="text"
             id="expiry"
@@ -100,7 +124,9 @@ const Payment = () => {
         </div>
 
         <div className="mt-3">
-          <label htmlFor="cvv" className="block text-base mb-2">CVV</label>
+          <label htmlFor="cvv" className="block text-base mb-2">
+            CVV
+          </label>
           <input
             type="password"
             id="cvv"
@@ -110,12 +136,17 @@ const Payment = () => {
         </div>
 
         <div className="mt-5">
-          <button 
+          <button
             onClick={handlePaymentConfirm}
-            className="bg-green-600 w-full py-2 text-white rounded-md hover:bg-green-700 transition-colors transform hover:scale-105 duration-200">
+            className="bg-green-600 w-full py-2 text-white rounded-md hover:bg-green-700 transition-colors transform hover:scale-105 duration-200"
+          >
             Confirm Payment
           </button>
         </div>
+
+        {status && (
+          <div className="mt-3 text-center text-blue-600">{status}</div>
+        )}
       </div>
 
       <style jsx>{`
